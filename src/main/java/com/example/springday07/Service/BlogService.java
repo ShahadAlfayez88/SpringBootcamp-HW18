@@ -1,5 +1,6 @@
 package com.example.springday07.Service;
 
+import com.example.springday07.Ecxeption.ApiException;
 import com.example.springday07.Model.Blog;
 import com.example.springday07.Repository.BlogRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,10 +26,11 @@ public class BlogService {
     // update
 
     public boolean updateBlog(Integer id, Blog blog){
-        Blog oldBold = blogrepository.getById(id);
+        // method 1
+        Blog oldBold = blogrepository.findBlogById(id);
 
-        if(!blogrepository.existsById(id)){
-            return false;
+        if(oldBold==null){
+            throw new ApiException("Id is not found");
         }
        oldBold.setTitle(blog.getTitle());
        oldBold.setBody(blog.getBody());
@@ -36,10 +38,22 @@ public class BlogService {
        return true;
     }
 
+    // search by title
+
+    public Blog findBlogByTitle(String title){
+        Blog blog = blogrepository.findBlogByTitle(title);
+        if (blog==null){
+            throw new ApiException("title is not found");
+        }
+        return blog;
+    }
+
+
     public boolean deletBlog(Integer id){
-        Blog oldBold = blogrepository.getById(id);
+        // method 2
+        Blog oldBold = blogrepository.findIdfrome(id);
         if(!blogrepository.existsById(id)){
-            return false;
+            throw new ApiException("Id is not found");
         }
         blogrepository.delete(oldBold);
         return true;

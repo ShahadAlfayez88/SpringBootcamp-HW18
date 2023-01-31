@@ -5,7 +5,6 @@ import com.example.springday07.Service.BlogService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,33 +26,33 @@ public class Controller {
 
     //add
     @PostMapping("/add")
-    public ResponseEntity addBlog(@Valid @RequestBody Blog blog, Errors error){
-        if(error.hasErrors()){
-            return ResponseEntity.status(400).body(error.getFieldError().getDefaultMessage());
-        }
+    public ResponseEntity addBlog(@Valid @RequestBody Blog blog){
         blogservice.addBlog(blog);
         return ResponseEntity.status(200).body("Blog Added");
     }
     //update
     @PutMapping("/update/{id}")
-    public ResponseEntity updateBlog(@Valid @RequestBody Blog blog, Errors error, @PathVariable Integer id){
-        if(error.hasErrors()){
-            return ResponseEntity.status(400).body(error.getFieldError().getDefaultMessage());
-        }
-        boolean isValid = blogservice.updateBlog(id,blog);
-        if(isValid){
-            return ResponseEntity.status(200).body("Blog is updated ");
-        }
-        return ResponseEntity.status(400).body("Id is not found");
+    public ResponseEntity updateBlog(@Valid @RequestBody Blog blog, @PathVariable Integer id) {
+
+        boolean isValid = blogservice.updateBlog(id, blog);
+
+        return ResponseEntity.status(200).body("Blog is updated ");
     }
+
+
+    //search - by title
+    @GetMapping("/getBlog/{title}")
+    public ResponseEntity getByTitle(@PathVariable String title ){
+        Blog blog = blogservice.findBlogByTitle(title);
+        return ResponseEntity.status(200).body(blog);
+    }
+
+
     //delete
     @DeleteMapping("/delete/{id}")
     public ResponseEntity updateBlog(@PathVariable Integer id){
-        boolean isValid = blogservice.deletBlog(id);
-        if(isValid){
-            return ResponseEntity.status(200).body("Blog is deleted ");
-        }
-        return ResponseEntity.status(400).body("Id is not found");
+
+        return ResponseEntity.status(200).body("Blog is deleted ");
 
     }
 

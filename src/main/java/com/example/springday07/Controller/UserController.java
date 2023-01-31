@@ -5,9 +5,9 @@ import com.example.springday07.Service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -26,34 +26,52 @@ public class UserController {
 
     //add
     @PostMapping("/add")
-    public ResponseEntity addUser(@Valid @RequestBody User user, Errors error){
-        if(error.hasErrors()){
-            return ResponseEntity.status(400).body(error.getFieldError().getDefaultMessage());
-        }
+    public ResponseEntity addUser(@Valid @RequestBody User user){
         userService.addUser(user);
         return ResponseEntity.status(200).body("User Added");
     }
     //update
     @PutMapping("/update/{id}")
-    public ResponseEntity updateUser(@Valid @RequestBody User user, Errors error, @PathVariable Integer id){
-        if(error.hasErrors()){
-            return ResponseEntity.status(400).body(error.getFieldError().getDefaultMessage());
-        }
+    public ResponseEntity updateUser(@Valid @RequestBody User user, @PathVariable Integer id){
         boolean isValid = userService.updateUser(id,user);
-        if(isValid){
-            return ResponseEntity.status(200).body("user is updated ");
-        }
-        return ResponseEntity.status(400).body("Id is not found");
+        return ResponseEntity.status(200).body("user is updated ");
+
     }
     //delete
     @DeleteMapping("/delete/{id}")
     public ResponseEntity deleteUser(@PathVariable Integer id){
         boolean isValid = userService.deleteUser(id);
-        if(isValid){
-            return ResponseEntity.status(200).body("user is deleted ");
-        }
-        return ResponseEntity.status(400).body("Id is not found");
+        return ResponseEntity.status(200).body("user is deleted ");
 
+    }
+
+    // find user by age
+    @GetMapping("/getUserByAge/{age}")
+    public ResponseEntity getByAge(@PathVariable Integer age ){
+        List<User> users = userService.findUserByAge(age);
+        return ResponseEntity.status(200).body(users);
+    }
+
+//     find user by role
+    @GetMapping("/getUserByRole/{role}")
+    public ResponseEntity getByRole(@PathVariable String role ){
+        List<User> users = userService.findByRole(role);
+        return ResponseEntity.status(200).body(users);
+    }
+
+    //get user by username and password
+    @GetMapping("/checkPasswordAndUserName/{username}/{password}")
+    public ResponseEntity getByRool(@PathVariable String username, @PathVariable String password){
+        User user = userService.findByUsernameAndPassword(username,password);
+        return ResponseEntity.status(200).body("user is in the system");
+    }
+
+    // get user by email
+
+    @GetMapping("/getUserByemail/{email}")
+    public ResponseEntity getByAge(@PathVariable String email ){
+        User user = userService.findUserByEmail(email);
+        return ResponseEntity.status(200).body(user);
     }
 
 }

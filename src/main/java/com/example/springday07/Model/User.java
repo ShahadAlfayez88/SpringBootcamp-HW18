@@ -21,6 +21,9 @@ public class User {
 //    @Column (columnDefinition = "unique")// لما ابي validation على مستوى DB
     private String username;
 
+    @NotEmpty(message = "Password field is required")
+    private String password;
+
     @NotEmpty(message = "email field is required")
     @Email(message = "please enter a valid email")
 //    @Column (columnDefinition = "unique")
